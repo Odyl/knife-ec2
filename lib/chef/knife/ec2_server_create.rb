@@ -117,6 +117,10 @@ class Chef
         :long => "--ebs-size SIZE",
         :description => "The size of the EBS volume in GB, for EBS-backed instances"
 
+      option :windows,
+        :long => "--windows",
+        :description => "Is it a windows instance"
+
       option :ebs_no_delete_on_term,
         :long => "--ebs-no-delete-on-term",
         :description => "Do not delete EBS volumn on instance termination"
@@ -209,6 +213,10 @@ class Chef
         print "\n#{ui.color("Waiting for sshd", :magenta)}"
         
         fqdn = vpc_mode? ? server.private_ip_address : server.dns_name
+
+        if config[:windows] then
+            exit 0
+        end
         
         print(".") until tcp_test_ssh(fqdn) {
           sleep @initial_sleep_delay ||= (vpc_mode? ? 40 : 10)
